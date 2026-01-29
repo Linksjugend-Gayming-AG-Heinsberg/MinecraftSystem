@@ -1,6 +1,5 @@
 package mofplays.test.linksjugendsystem.Claim;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,70 +9,60 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sound.midi.MidiFileFormat;
 import java.lang.module.Configuration;
-import java.util.UUID;
 
 public class ClaimCommand implements CommandExecutor {
-    private Plugin plugin;
-    FileConfiguration config = plugin.getConfig();
+    private final Plugin plugin;
 
+    public ClaimCommand(Plugin plugin) {
+        this.plugin = plugin;
+    }
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        Player player = (Player) commandSender;
-        UUID playerUUID = player.getUniqueId();
-        String playerUUIDString = playerUUID.toString();
-        String message = strings[0];
-        boolean bereichbesetzt = false;
+        var message = strings[0];
+        var config = plugin.getConfig();
         switch (message) {
             case "pos1":
-                Location neueLocation = player.getLocation();
-                for (String fremdeUUID : config.getKeys(false)) {
-                    double fremde1X = config.getDouble("Claim." + fremdeUUID + ".pos1.x");
-                    double fremde1Y = config.getDouble("Claim." + fremdeUUID + ".pos1.y");
-                    double fremde1Z = config.getDouble("Claim." + fremdeUUID + ".pos1.z");
-                    double fremde2X = config.getDouble("Claim." + fremdeUUID + ".pos2.x");
-                    double fremde2Y = config.getDouble("Claim." + fremdeUUID + ".pos2.y");
-                    double fremde2Z = config.getDouble("Claim." + fremdeUUID + ".pos2.z");
-                    if (neueLocation.getX() >= fremde1X && neueLocation.getX() <= fremde2X
-                            && neueLocation.getZ() >= fremde1Z && neueLocation.getZ() <= fremde2Z) {
-                        bereichbesetzt = true;
-                    }
-
-                }
-                if (bereichbesetzt) break;
-                double x = neueLocation.getX();
-                double y = neueLocation.getY();
-                double z = neueLocation.getZ();
-                config.set("Claim." + playerUUIDString + ".pos1.x", x);
-                config.set("Claim." + playerUUIDString + ".pos1.y", y);
-                config.set("Claim." + playerUUIDString + ".pos1.z", z);
+                var player = (Player) commandSender;
+                var loc = player.getLocation();
+                var x = loc.getX();
+                var y = loc.getY();
+                var z = loc.getZ();
+                var uuid = player.getUniqueId();
+                var uuidString = uuid.toString();
+                config.set("Claim." + uuidString + ".pos1.x", x);
+                config.set("Claim." + uuidString + ".pos1.ganz", loc);
+                config.set("Claim." + uuidString + ".pos1.z",z);
+                config.set("Claim." + uuidString + ".pos1.y", y);
                 plugin.saveConfig();
                 break;
             case "pos2":
-                Location pos2 = player.getLocation();
-                for (String fremdeUUID : config.getKeys(false)) {
-                    double fremde1X = config.getDouble("Claim." + fremdeUUID + ".pos1.x");
-                    double fremde1Y = config.getDouble("Claim." + fremdeUUID + ".pos1.y");
-                    double fremde1Z = config.getDouble("Claim." + fremdeUUID + ".pos1.z");
-                    double fremde2X = config.getDouble("Claim." + fremdeUUID + ".pos2.x");
-                    double fremde2Y = config.getDouble("Claim." + fremdeUUID + ".pos2.y");
-                    double fremde2Z = config.getDouble("Claim." + fremdeUUID + ".pos2.z");
-                    if (pos2.getX() >= fremde1X && pos2.getX() <= fremde2X
-                            && pos2.getZ() >= fremde1Z && pos2.getZ() <= fremde2Z) {
-                        bereichbesetzt = true;
-                    }
-                    if (bereichbesetzt) break;
-                    double pos2X = pos2.getX();
-                    double pos2Y = pos2.getY();
-                    double pos2Z = pos2.getZ();
-                    config.set("Claim." + playerUUIDString + ".pos2.x", pos2X);
-                    config.set("Claim." + playerUUIDString + ".pos2.y", pos2Y);
-                    config.set("Claim." + playerUUIDString + ".pos2.z", pos2Z);
-                    plugin.saveConfig();
-                }
+                var player2 = (Player) commandSender;
+                var lo = player2.getLocation();
+                var x2 = lo.getX();
+                var y2 = lo.getY();
+                var z2 = lo.getZ();
+                var uuid2 = player2.getUniqueId();
+                var uuid2string = uuid2.toString();
+                config.set("Claim." + uuid2string + ".pos2.x", x2);
+                config.set("Claim." + uuid2string + "pos2.y", y2);
+                config.set("Claim." + uuid2string+ "pos2.z", z2);
+                config.set("Claim." + uuid2string + "pos2.ganz", lo);
+                plugin.saveConfig();
                 break;
         }
         return false;
+    }
+    public boolean BlockIstinArea(Player player) {
+        var config = plugin.getConfig();
+        var uuid = player.getUniqueId();
+        var uuidString = uuid.toString();
+        var loc = player.getLocation();
+        var x1 = config.getDouble("Claim." + uuidString + ".pos1.x");
+        var z1 = config.getDouble("Claim." + uuidString + ".pos1.z");
+        var x2 = config.getDouble("Claim." + uuidString + ".pos2.x");
+        var z2 = config.getDouble("Claim." + uuidString + ".pos2.z");
+        return loc.getBlockX() >= x1 && loc.getBlockX() <= x2 &&
+                loc.getBlockZ() >= z1 && loc.getBlockZ() <= z2;
     }
 }
