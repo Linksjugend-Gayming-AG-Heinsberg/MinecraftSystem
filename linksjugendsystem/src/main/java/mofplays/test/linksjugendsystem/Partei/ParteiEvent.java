@@ -24,7 +24,6 @@ public class ParteiEvent implements Listener {
     Map<UUID, String> anvilText = new HashMap<>();
     @EventHandler
     public void onInventory(InventoryClickEvent event) {
-        var inv = event.getView();
         var player = (Player) event.getWhoClicked();
         String title = event.getView().getTitle();
         if (title.equalsIgnoreCase("Partei")) {

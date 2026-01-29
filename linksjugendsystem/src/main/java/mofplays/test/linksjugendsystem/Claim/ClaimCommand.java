@@ -50,6 +50,16 @@ public class ClaimCommand implements CommandExecutor {
                 config.set("Claim." + uuid2string + "pos2.ganz", lo);
                 plugin.saveConfig();
                 break;
+            case "ferig":
+                var player4 = (Player) commandSender;
+                var uuid3 = player4.getUniqueId();
+                var uuid3String = uuid3.toString();
+                var loce = player4.getLocation();
+                var name = strings[1];
+                config.set("Claim." + uuid3String + ".name", name);
+                config.set("Claim." + uuid3String + ".location", loce);
+                plugin.saveConfig();
+                break;
         }
         return false;
     }
